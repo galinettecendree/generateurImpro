@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Générateur</title>
+</head>
+<body>
+<p class="essai">Texte</p>
+
+<script >
+    (function () {
+        "use strict";
+
+        let p = document.querySelector("p.essai");
+
+        // Replace ./data.json with your JSON feed
+        fetch('http://localhost:3000/randomElementForImpro')
+            .then(response => {
+                return response.json()
+            })
+            .then(data => {
+                // Work with JSON data here
+                console.log(data)
+            })
+            .catch(err => {
+                // Do something for an error here
+                console.log("noooop");
+            })
+
+
+    }());
+
+</script>
+</body>
+</html>
