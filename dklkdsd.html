@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Générateur</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<img src="img/masques.png" alt="Masques de théatre">
+<h1>Générateur d'impro</h1>
+<canvas class="gradientAnime"></canvas>
+<button type="button" class="improPLS">Générer une impro</button>
+<p>Source des idées : <a href="http://impronivers.be/">Impronivers</a></p>
+<ul>
+    <li class = "perso"><h3>Personnage</h3> <p class="perso">Le personnage que l'on doit jouer</p></li>
+    <li class = "action"><h3>Action</h3> <p class="action">Une action que le personnage doit réaliser</p></li>
+    <li class = "objet"><h3>Objet</h3> <p class="objet">Un objet que le personnage doit utiliser</p></li>
+    <li class = "lieu"><h3>Lieu</h3> <p class="lieu">Le lieu où il se trouve</p></li>
+</ul>
+<p class="copyright">Par Timothée DURAND - 2020</p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.2.4/gsap.min.js"></script>
+<script src="granim.min.js" ></script>
+<script>
+    (function () {
+        "use strict";
+
+        let buttonImpro = document.querySelector("button.improPLS");
+        let object = null;
+        let perso = null;
+        let lieu = null;
+        let action = null;
+
+        let go = false;
+
+
+
+        // Replace ./data.json with your JSON feed
+        fetch('app/tout.json')
+            .then(response => {
+                return response.json();
+            })
+            .then(data => {
+                // Work with JSON data here
+                //console.log(data);
+
+                object = data.objets;
+                // console.log("objet :",object);
+                perso = data.persos;
+                // console.log("perso  :",perso);
+                action = data.actions;
+                // console.log("action :",action);
+                lieu = data.lieux;
+                // console.log("lieu :",lieu);
+                go = true;
+
+                buttonImpro.addEventListener("click", function setImpro() {
+
+                    gsap.to("li",{
+                        scale:0,
+                        duration : 0.2,
+                        stagger: 0.2,
+                        ease: "power1",
+                        onComplete : changeTxt
+                    });
+
+
+                    function changeTxt() {
+                        let impro = getRandomImpro();
+                        console.log(impro);
+
+                        for(var i in impro){
+                            let p = document.querySelector("p."+i);
+                            console.log(p);
+                            p.innerHTML = impro[i];
+                        }
+                        setTimeout(playAnimIn, 500);
+                    }
+
+
+
+                    function playAnimIn() {
+                        gsap.to("li",{
+                            scale:1,
+                            duration : 0.2,
+                            stagger: 0.2,
+                            ease: "power1"
+                        });
+                    }
+
+
+
+                });
+
+                let ul = document.querySelectorAll("li");
+                for (const ulElement of ul) {
+                    ulElement.addEventListener("pointerenter", function () {
+                        console.log(this.className);
+                    })
+                }
+
+            }).catch(err => {
+                // Do something for an error here
+                console.log("noooop", err);
+            });
+
+        function getRandomImpro() {
+            return {
+                "lieu": randomColor(lieu),
+                "action": randomColor(action),
+                "perso": randomColor(perso),
+                "objet": randomColor(object)
+            }
+        }
+
+
+        function randomColor(colors) {
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+
+
+        var granimInstance = new Granim({
+            element: '.gradientAnime',
+            isPausedWhenNotInView: true,
+            states : {
+                "default-state": {
+                    gradients: [
+                        ['#ff9966', '#ff5e62'],
+                        ['#e1eec3', '#f05053']
+                    ]
+                }
+            }
+        });
+
+        // animation
+
+
+
+
+
+    }());
+
+</script>
+</body>
+</html>
